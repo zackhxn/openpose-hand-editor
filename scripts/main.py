@@ -59,7 +59,7 @@ def on_ui_tabs():
           # delete = gr.Button(value="Delete")
         with gr.Row():
           reset_btn = gr.Button(value="Reset")
-          json_input = gr.Button(value="Load from JSON")
+          json_input = gr.UploadButton(label="Load from JSON", file_types=[".json"], elem_id="openpose_json_button")
           png_input = gr.Button(value="Detect from image")
           png_input_area = gr.Image(label="Detect from image", elem_id="openpose_editor_input")
           bg_input = gr.Button(value="Add Background image")
@@ -105,7 +105,7 @@ def on_ui_tabs():
     send_t2t.click(None, [], None, _js="() => {sendImage('txt2img')}")
     send_i2i.click(None, [], None, _js="() => {sendImage('img2img')}")
     reset_btn.click(None, [], None, _js="resetCanvas")
-    json_input.click(None, None, [width, height], _js="loadJSON")
+    json_input.upload(None, json_input, [width, height], _js="loadJSON")
     json_output.click(None, None, None, _js="saveJSON")
 
   return [(openpose_editor, "OpenPose Editor", "openpose_editor")]

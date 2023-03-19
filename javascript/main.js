@@ -139,22 +139,39 @@ function redo() {
         });
     }
 }
-
+//画图需要三个：keypoints节点位置，connect_keypoints节点连接情况，connect_color连接线的颜色
+//loadjson调用了这个函数 setPose(json["keypoints"])
 function setPose(keypoints,connect_keypoints,connect_color){
     const canvas = openpose_editor_canvas;
 
     canvas.backgroundColor = "#000"
+    if(keypoints.length %18 === 0 && keypoints.length !== 0){
+        const res = [];
+        for (let i = 0; i < keypoints.length; i += 18) {
+            const chunk = keypoints.slice(i, i + 18);
+            res.push(chunk);
+        }
 
-    const res = [];
-    for (let i = 0; i < keypoints.length; i += keypoints.length) {
-        const chunk = keypoints.slice(i, i + keypoints.length);
-        res.push(chunk);
+        for (item of res){
+            addPose(item,connect_keypoints,connect_color)
+            openpose_editor_canvas.discardActiveObject();
+        }
+    }
+    if(keypoints.length %21 === 0 && keypoints.length !== 0){
+        const res = [];
+        for (let i = 0; i < keypoints.length; i += 21) {
+            const chunk = keypoints.slice(i, i + 21);
+            res.push(chunk);
+        }
+
+        for (item of res){
+            addPose(item,connect_keypoints,connect_color)
+            openpose_editor_canvas.discardActiveObject();
+        }
     }
 
-    for (item of res){
-        addPose(item,connect_keypoints,connect_color)
-        openpose_editor_canvas.discardActiveObject();
-    }
+
+
 }
 function addPose_body(keypoints = default_keypoints,a=connect_keypoints,b=connect_color){
     addPose(keypoints,a,b);
@@ -212,7 +229,7 @@ function addPose(keypoints=undefined,connect_keypoints=undefined,connect_color=u
         lines.push(line)
         canvas.add(line)
     }
-
+    if (keypoints.length === 21){
     for (i = 0; i < keypoints.length; i++){
         list = []
         connect_keypoints.filter((item, idx) => {
@@ -224,10 +241,37 @@ function addPose(keypoints=undefined,connect_keypoints=undefined,connect_color=u
         //keypoint就是位置坐标有21个点
         circle = makeCircle("blue", keypoints[i][0], keypoints[i][1], ...list)
         circle["id"] = i
+
+        circle["name"]="hands"
+
         circles.push(circle)
         // canvas.add(circle)
         group.addWithUpdate(circle);
     }
+    }
+    if (keypoints.length === 18){
+    for (i = 0; i < keypoints.length; i++){
+        list = []
+        connect_keypoints.filter((item, idx) => {
+            if(item.includes(i)){
+                list.push(lines[idx])
+                return idx
+            }
+        })
+        //keypoint就是位置坐标有18个点
+        circle = makeCircle("blue", keypoints[i][0], keypoints[i][1], ...list)
+        circle["id"] = i
+
+        circle["name"]="body"
+
+        circles.push(circle)
+        // canvas.add(circle)
+        group.addWithUpdate(circle);
+    }
+    }
+
+
+
 
     canvas.discardActiveObject();
     canvas.setActiveObject(group);
@@ -347,44 +391,44 @@ function initCanvas(elem){
     setPose(default_keypoints_righthand,connect_hand_keypoints,connect_hand_color)
     undo_history.push(JSON.stringify(canvas));
 
-    const json_observer = new MutationObserver((m) => {
-        if(gradioApp().querySelector('#tab_openpose_editor').style.display!=='block') return;
-        try {
-            const raw = gradioApp().querySelector("#hide_json").querySelector("textarea").value.replaceAll("'", '"')
-            const json = JSON.parse(raw)
-
-            let candidate = json["candidate"]
-            let subset = json["subset"]
-            const li = []
-            subset = subset.splice(0, 18)
-            for (i=0; subset.length > i; i++){
-                if (Number.isInteger(subset[i]) && subset[i] >= 0){
-                    li.push(candidate[subset[i]])
-                }else{
-                    const ra_width = Math.floor(Math.random() * canvas.width)
-                    const ra_height = Math.floor(Math.random() * canvas.height)
-                    li.push([ra_width, ra_height])
-                }
-            }
-
-            setPose(li);
-
-            const fileReader = new FileReader();
-            fileReader.onload = function() {
-                const dataUri = this.result;
-                canvas.setBackgroundImage(dataUri, canvas.renderAll.bind(canvas), {
-                    opacity: 0.5
-                });
-                const img = new Image();
-                img.onload = function() {
-                    resizeCanvas(this.width, this.height)
-                }
-                img.src = dataUri;
-            }
-            fileReader.readAsDataURL(gradioApp().querySelector("#openpose_editor_input").querySelector("input").files[0]);
-        } catch(e){console.log(e)}
-    })
-    json_observer.observe(gradioApp().querySelector("#hide_json"), { "attributes": true })
+//    const json_observer = new MutationObserver((m) => {
+//        if(gradioApp().querySelector('#tab_openpose_editor').style.display!=='block') return;
+//        try {
+//            const raw = gradioApp().querySelector("#hide_json").querySelector("textarea").value.replaceAll("'", '"')
+//            const json = JSON.parse(raw)
+//
+//            let candidate = json["candidate"]
+//            let subset = json["subset"]
+//            const li = []
+//            subset = subset.splice(0, 18)
+//            for (i=0; subset.length > i; i++){
+//                if (Number.isInteger(subset[i]) && subset[i] >= 0){
+//                    li.push(candidate[subset[i]])
+//                }else{
+//                    const ra_width = Math.floor(Math.random() * canvas.width)
+//                    const ra_height = Math.floor(Math.random() * canvas.height)
+//                    li.push([ra_width, ra_height])
+//                }
+//            }
+//
+//            setPose(li);
+//
+//            const fileReader = new FileReader();
+//            fileReader.onload = function() {
+//                const dataUri = this.result;
+//                canvas.setBackgroundImage(dataUri, canvas.renderAll.bind(canvas), {
+//                    opacity: 0.5
+//                });
+//                const img = new Image();
+//                img.onload = function() {
+//                    resizeCanvas(this.width, this.height)
+//                }
+//                img.src = dataUri;
+//            }
+//            fileReader.readAsDataURL(gradioApp().querySelector("#openpose_editor_input").querySelector("input").files[0]);
+//        } catch(e){console.log(e)}
+//    })
+//    json_observer.observe(gradioApp().querySelector("#hide_json"), { "attributes": true })
 
     // document.addEventListener('keydown', function(e) {
     //     if (e.key !== undefined) {
@@ -426,17 +470,24 @@ function savePNG(){
     return openpose_editor_canvas
 }
 
-function saveJSON(){
-    const canvas = openpose_editor_canvas
+function saveJSON() {
+    const canvas = openpose_editor_canvas;
+    const bodyKeypoints = openpose_editor_canvas.getObjects().filter((item) => {
+        return item.name === "body";
+    }).map((item) => {
+        return [Math.round(item.left), Math.round(item.top)];
+    });
+    const handKeypoints = openpose_editor_canvas.getObjects().filter((item) => {
+        return item.name === "hands";
+    }).map((item) => {
+        return [Math.round(item.left), Math.round(item.top)];
+    });
     const json = JSON.stringify({
         "width": canvas.width,
         "height": canvas.height,
-        "keypoints": openpose_editor_canvas.getObjects().filter((item) => {
-            if (item.type === "circle") return item
-        }).map((item) => {
-            return [Math.round(item.left), Math.round(item.top)]
-        })
-    }, null, 4)
+        "keypoints": bodyKeypoints,
+        "hands_keypoints": handKeypoints
+    }, null, 4);
     const blob = new Blob([json], {
         type: 'text/plain'
     });
@@ -445,38 +496,28 @@ function saveJSON(){
     a.download = "pose.json";
     a.click();
     URL.revokeObjectURL(a.href);
-    return json
+    return json;
 }
 
-function loadJSON(){
-    const input = document.createElement("input");
-    input.type = "file"
-    input.click()
-    input.addEventListener("change", function(e){
-        const file = e.target.files[0];
-		var fileReader = new FileReader();
-		fileReader.onload = function() {
-            try {
-                const json = JSON.parse(this.result)
-                if (json["width"] && json["height"]) {
-                    resizeCanvas(json["width"], json["height"])
-                }else{
-                    throw new Error('width, height is invalid');
-                }
-                if (json["keypoints"].length % 18 === 0) {
-                    setPose(json["keypoints"])
-                }else{
-                    throw new Error('keypoints is invalid')
-                }
-                return [json["width"], json["height"]]
-            }catch(e){
-                console.error(e)
-                alert("Invalid JSON")
-            }
-		}
-		fileReader.readAsText(file);
-    })
-    input.click()
+async function loadJSON(file){
+    const response = await fetch(file.data)
+    const json = await response.json();
+    if (json["width"] && json["height"]) {
+        resizeCanvas(json["width"], json["height"])
+    }else{
+        throw new Error('width, height is invalid');
+    }
+
+    if (json["hands_keypoints"].length % 21 === 0 && json["hands_keypoints"].length !== 0) {
+        setPose(json["hands_keypoints"],connect_hand_keypoints,connect_hand_color)
+    }
+    //画身体
+    if (json["keypoints"].length % 18 === 0 && json["keypoints"].length !== 0) {
+        setPose(json["keypoints"],connect_keypoints,connect_color)
+    }else{
+        throw new Error('keypoints is invalid')
+    }
+    return [json["width"], json["height"]]
 }
 
 function addBackground(){
