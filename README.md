@@ -1,6 +1,14 @@
 # openpose-hand-editor
 为stable-diffusion-webui开发的手部openpose插件
 ![image](https://github.com/zackhxn/openpose-hand-editor/blob/main/images/(G1L%240)TA%7BI79GHJ%5BL%7BGF5N.png)
+## 3.19更新
+-  「Loa from JSON」：从JSON文件中添加身体与手部骨骼
+-  「Save JSON」：保存身体与手部骨骼为json
+json文件的键值对形式为：
+        "width": canvas.width,
+        "height": canvas.height,
+        "keypoints": bodyKeypoints([18,2]的list),
+        "hands_keypoints": handKeypoints
 ## 功能
 -  「Add body」：添加一个新骨骼
 -  「Add left hand」：添加左手
