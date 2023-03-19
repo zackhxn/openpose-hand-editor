@@ -8,8 +8,8 @@
 ```
 "width": canvas.width,
 "height": canvas.height,
-"keypoints": bodyKeypoints([18,2]的list),
-"hands_keypoints": handKeypoints([21,2]的list)
+"keypoints": bodyKeypoints([18,2]*N的list),
+"hands_keypoints": handKeypoints([21,2]*N的list)
 ```
 ## 功能
 -  「Add body」：添加一个新骨骼
