@@ -5,12 +5,12 @@
 -  「Loa from JSON」：从JSON文件中添加身体与手部骨骼
 -  「Save JSON」：保存身体与手部骨骼为json
 -  json文件的键值对形式为：
--  ```
--          "width": canvas.width,
--          "height": canvas.height,
--          "keypoints": bodyKeypoints([18,2]的list),
--          "hands_keypoints": handKeypoints([21,2]的list)
--  ```
+```
+"width": canvas.width,
+"height": canvas.height,
+"keypoints": bodyKeypoints([18,2]的list),
+"hands_keypoints": handKeypoints([21,2]的list)
+```
 ## 功能
 -  「Add body」：添加一个新骨骼
 -  「Add left hand」：添加左手
