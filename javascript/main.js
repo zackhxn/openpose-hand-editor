@@ -507,15 +507,19 @@ async function loadJSON(file){
     }else{
         throw new Error('width, height is invalid');
     }
-
-    if (json["hands_keypoints"].length % 21 === 0 && json["hands_keypoints"].length !== 0) {
-        setPose(json["hands_keypoints"],connect_hand_keypoints,connect_hand_color)
+    if("hands_keypoints" in json){
+        if (json["hands_keypoints"].length % 21 === 0 && json["hands_keypoints"].length !== 0) {
+            setPose(json["hands_keypoints"],connect_hand_keypoints,connect_hand_color)
+        }
     }
+
     //画身体
-    if (json["keypoints"].length % 18 === 0 && json["keypoints"].length !== 0) {
-        setPose(json["keypoints"],connect_keypoints,connect_color)
-    }else{
-        throw new Error('keypoints is invalid')
+    if("keypoints" in json){
+        if (json["keypoints"].length % 18 === 0 && json["keypoints"].length !== 0) {
+            setPose(json["keypoints"],connect_keypoints,connect_color)
+        }else{
+            throw new Error('keypoints is invalid')
+        }
     }
     return [json["width"], json["height"]]
 }
