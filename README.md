@@ -1,6 +1,6 @@
 # openpose-hand-editor
 为stable-diffusion-webui开发的手部openpose插件
-![image](https://github.com/zackhxn/openpose-hand-editor/blob/main/images/(G1L%240)TA%7BI79GHJ%5BL%7BGF5N.png)
+![image](https://github.com/zackhxn/openpose-hand-editor/blob/main/images/EX1QXD64IH4%601UG%60%7BZ0L%40J8.png)
 ## 3.19更新
 -  「Load from JSON」：从JSON文件中添加身体与手部骨骼
 -  「Save JSON」：保存身体与手部骨骼为json
