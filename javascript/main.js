@@ -75,7 +75,18 @@ let openpose_obj = {
         }
     ]
 }
+function keypoint_addImg(path){
 
+//    alert(path)
+    const canvas = openpose_editor_canvas;
+	fabric.Image.fromURL(path, function(oImg) {
+		canvas.add(oImg);
+		canvas.discardActiveObject();
+		canvas.setActiveObject(oImg);
+
+	});
+	canvas.requestRenderAll();
+}
 //左手和右手
 const default_keypoints_lefthand = [[334, 248], [338, 235], [346, 220], [354, 209], [361, 200], [367, 230], [380, 222], [390, 217], [398, 213], [369, 240], [387, 233], [397, 228], [406, 226], [368, 248], [385, 243], [395, 242], [405, 240], [366, 255], [377, 254], [384, 254], [391, 254]]
 const default_keypoints_righthand = [[161, 256], [153, 242], [140, 229], [130, 218], [121, 208], [124, 241], [109, 236], [99, 233], [89, 229], [122, 251], [105, 247], [94, 245], [85, 243], [124, 261], [108, 259], [97, 258], [87, 258], [128, 270], [117, 270], [109, 270], [102, 269]]
