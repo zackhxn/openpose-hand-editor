@@ -7,7 +7,7 @@ import gradio as gr
 import modules.scripts as scripts
 from modules import script_callbacks
 
-from basicsr.utils.download_util import load_file_from_url
+
 
 
 
@@ -70,7 +70,7 @@ def on_ui_tabs():
           json_input = gr.UploadButton(label="Load from JSON", file_types=[".json"], elem_id="openpose_json_button")
           # png_input = gr.Button(value="Detect from image")
           # png_input_area = gr.Image(label="Detect from image", elem_id="openpose_editor_input")
-          bg_input = gr.Button(value="Add Background image")
+          bg_input = gr.UploadButton(label="Add image", file_types=["image"], type="bytes")
 
 
 
@@ -123,7 +123,7 @@ def on_ui_tabs():
     width.change(None, [width, height], None, _js="(w, h) => {resizeCanvas(w, h)}")
     height.change(None, [width, height], None, _js="(w, h) => {resizeCanvas(w, h)}")
     png_output.click(None, [], None, _js="savePNG")
-    bg_input.click(None, [], None, _js="addBackground")
+    bg_input.upload(None, bg_input, [width, height], _js="addBackground")
     # png_input.click(None, [], None, _js="detectImage")
     add_body.click(None, [], None, _js="addPose_body")
     add_left.click(None, [], None, _js="addPose_left")

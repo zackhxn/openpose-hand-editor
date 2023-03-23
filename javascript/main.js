@@ -534,31 +534,41 @@ async function loadJSON(file){
     }
     return [json["width"], json["height"]]
 }
-
-function addBackground(){
-    const input = document.createElement("input");
-    input.type = "file"
-    input.accept = "image/*"
-    input.addEventListener("change", function(e){
-        const canvas = openpose_editor_canvas
-        const file = e.target.files[0];
-		var fileReader = new FileReader();
-		fileReader.onload = function() {
-			var dataUri = this.result;
-            canvas.setBackgroundImage(dataUri, canvas.renderAll.bind(canvas), {
-                opacity: 0.5
-            });
-            const img = new Image();
-            img.onload = function() {
-                resizeCanvas(this.width, this.height)
-            }
-            img.src = dataUri;
-		}
-		fileReader.readAsDataURL(file);
-    })
-    input.click()
-    return
+async function addBackground(file){
+    openpose_editor_canvas.setBackgroundImage(file.data, openpose_editor_canvas.renderAll.bind(openpose_editor_canvas), {
+        opacity: 0.5
+    });
+    const img = new Image();
+    await (img.src = file.data);
+    resizeCanvas(img.width, img.height)
+    return [img.width, img.height]
 }
+
+
+//function addBackground(){
+//    const input = document.createElement("input");
+//    input.type = "file"
+//    input.accept = "image/*"
+//    input.addEventListener("change", function(e){
+//        const canvas = openpose_editor_canvas
+//        const file = e.target.files[0];
+//		var fileReader = new FileReader();
+//		fileReader.onload = function() {
+//			var dataUri = this.result;
+//            canvas.setBackgroundImage(dataUri, canvas.renderAll.bind(canvas), {
+//                opacity: 0.5
+//            });
+//            const img = new Image();
+//            img.onload = function() {
+//                resizeCanvas(this.width, this.height)
+//            }
+//            img.src = dataUri;
+//		}
+//		fileReader.readAsDataURL(file);
+//    })
+//    input.click()
+//    return
+//}
 
 function detectImage(){
     gradioApp().querySelector("#openpose_editor_input").querySelector("input").click()
